@@ -10,6 +10,7 @@ The Graph class can be used to generate vertices and edges for a graph.
 #include <map>
 #include <iterator>
 #include <fstream>
+#include <cmath>
 
 using namespace std;
 
@@ -26,7 +27,7 @@ class Graph
 	{
 		vertex a;
 		vertex b;
-		int weight;
+		double distance=0.0;
 	};
 	
 	map <int, edge> edges;
@@ -73,6 +74,8 @@ class Graph
 			edges[i].b.x = vertices[b].x;
 			edges[i].b.y= vertices[b].y;
 
+			edges[i].distance= sqrt(pow((edges[i].b.x-edges[i].a.x),2)+ pow((edges[i].b.y-edges[i].a.y),2));
+
 		}
 	}
 
@@ -80,7 +83,7 @@ class Graph
 		cout<<"---------------Edges--------------\n";
 		for(auto elem : edges){
 			cout <<"Edge "<< elem.first+1<< ": (" << elem.second.a.x << ", " << elem.second.a.y << ") (";
-			cout<<elem.second.b.x << ", " << elem.second.b.y << ")\n";
+			cout<<elem.second.b.x << ", " << elem.second.b.y << ") Distance: "<<elem.second.distance<<"\n";
 		}
 	}
 
