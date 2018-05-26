@@ -7,7 +7,6 @@ The Graph class can be used to generate vertices and edges for a graph.
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
-#include <iterator>
 
 using namespace std;
 
