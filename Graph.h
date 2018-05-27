@@ -5,8 +5,6 @@
 #include <ctime>
 #include <iostream>
 #include <list>
-#include <set>
-#include <iterator>
 
 using namespace std;
 
@@ -53,6 +51,7 @@ class Graph
 		for(int i=0; i<size;i++){
 			x=rand()%20;
 			y=rand()%20;
+
 
 			if(x==y)
 				y=rand()%20;
@@ -190,7 +189,7 @@ class Graph
 	void printGraph(){
 
 		cout<<endl;
-		cout<<"-----------Adjacency List Graph Representation--------------"
+		cout<<"-----------Adjacency List Graph Representation--------------";
 		for(int i=0; i<adjList.size();i++){
 			cout<<i<<": ";
 			if(adjList[i].empty())
