@@ -16,21 +16,13 @@ class Graph
 		int x;
 		int y;
 	};
-
-	struct edge
-	{
-		vertex a;
-		vertex b;
-		double distance=0.0;
-	};
 	
-	map <int, vertex> vertices;
+	vector<vertex> vertices;
 	vertex v;
-
 	vector<list<vertex> > adjList;
 
 	int size;
-	
+
   public:
 
 	Graph (int size){
@@ -42,7 +34,8 @@ class Graph
 		return (size==0);
 	}
 
-	void createGraph(){
+	//Generate random graph with inputted number of vertices and edges
+	void createRandomGraph(){
 		
 		int x, y,c,a,b;
 		srand(time(NULL));	
@@ -51,19 +44,11 @@ class Graph
 		for(int i=0; i<size;i++){
 			x=rand()%20;
 			y=rand()%20;
-
-
-			if(x==y)
-				y=rand()%20;
-
-			insertVertex(x, y, i);
+		if(x==y)
+			y=rand()%20;
+			insertVertex(x, y);
+			setGraph();
 		}
-
-		for(int i=0; i<adjList.size();i++){
-			vertex a = vertices[i];
-			adjList[i].push_back(a);
-		}
-
 	
 		cout<<"How many edges?"<<endl;
 		cin>>c;
@@ -75,46 +60,45 @@ class Graph
 		}
 	}
 
+	//Initialize adjacency list with inputted vertices
+	void setGraph(){
 
-	void insertVertex(int x, int y, int i){
+		adjList.resize(vertices.size());
+
+		vertex a = vertices[vertices.size()-1];
+		adjList[adjList.size()-1].push_back(a);
+	}
+
+	//Insert vertex into list of vertices
+	void insertVertex(int x, int y){
 			v.x=x;
 			v.y=y;
-			vertices[i]=v;
+			vertices.push_back(v);
 	}
 
     //Generate sample shapes: rectangle, triangle, square
-	
 	void sampleShape(char c)
 	{
 		
 		srand(time(NULL));
 		
-		if(c=='a'){
+		if(c=='a'){						//Generate rectangle
 			int x = rand()%50;
 			int y = rand()%50;
 			int u = rand()%50;
 			int w = rand()%50;
 
-			v.x=x;
-			v.y=y;
-			vertices[0]=v;
+			insertVertex(x, y);
+			setGraph();
 
-			v.x=x;
-			v.y=w;
-			vertices[1]=v;
+			insertVertex(x, w);
+			setGraph();
 
-			v.x=u;
-			v.y=y;
-			vertices[2]=v;
+			insertVertex(u, y);
+			setGraph();
 
-			v.x=u;
-			v.y=w;
-			vertices[3]=v;
-
-			for(int i=0; i<adjList.size();i++){
-			vertex a = vertices[i];
-			adjList[i].push_back(a);
-		}
+			insertVertex(u, w);
+			setGraph();			
 
 			insertEdge(0, 1);
 			insertEdge(2, 3);
@@ -122,56 +106,39 @@ class Graph
 			insertEdge(1, 3);
 
 		}
-		else if (c=='b'){
+		else if (c=='b'){				//Generate Triangle
 			int x = rand()%50;
 
-			v.x=x;
-			v.y=rand()%50;
-			vertices[0]=v;
+			insertVertex(x, rand()%50);
+			setGraph();
 
-			v.x=x;
-			v.y=rand()%50;
-			vertices[1]=v;
+			insertVertex(x, rand()%50);
+			setGraph();
 
-			v.x=rand()%50;
-			v.y=rand()%50;
-			vertices[2]=v;
-
-			for(int i=0; i<adjList.size();i++){
-				vertex a = vertices[i];
-				adjList[i].push_back(a);
-			}
+			insertVertex(rand()%50, rand()%50);
+			setGraph();
 
 			insertEdge(0, 1);
 			insertEdge(2, 1);
 			insertEdge(0, 2);
 			
 		}
-		else{
+		else{							//Generate Square
 			int x = rand()%50;
 			int y = rand()%50;
 			int dist = abs(x-y);
-			
-			v.x=x;
-			v.y=y;
-			vertices[0]=v;
 
-			v.x=x+dist;
-			v.y=y;
-			vertices[1]=v;
+			insertVertex(x, y);
+			setGraph();
 
-			v.x=x;
-			v.y=y+dist;
-			vertices[2]=v;
+			insertVertex(x+dist, y);
+			setGraph();
 
-			v.x=x+dist;
-			v.y=y+dist;
-			vertices[3]=v;
+			insertVertex(x, y+dist);
+			setGraph();
 
-			for(int i=0; i<adjList.size();i++){
-				vertex a = vertices[i];
-				adjList[i].push_back(a);
-			}	
+			insertVertex(x+dist, y+dist);
+			setGraph();			
 
 			insertEdge(0, 1);
 			insertEdge(2, 3);
@@ -181,16 +148,20 @@ class Graph
 
 	}
 
+	//Insert node into proper adjacency list
+	//Node is added to both list 
+	//Undirected Grpah
 	void insertEdge(int a, int b){
 		adjList[a].push_back(vertices[b]);	
 		adjList[b].push_back(vertices[a]);
 	}
 
+	//Display the adjacency list
 	void printGraph(){
 
 		cout<<endl;
-		cout<<"-----------Adjacency List Graph Representation--------------";
-		for(int i=0; i<adjList.size();i++){
+		cout<<"-----------Adjacency List Graph Representation--------------\n";
+		for(int i=0; i<vertices.size();i++){
 			cout<<i<<": ";
 			if(adjList[i].empty())
 				cout<<"Empty";
@@ -204,11 +175,14 @@ class Graph
 		}
 	}
 
+	//Display all nodes/vertices
 	void displayVertices(){
 		cout<<"---------------Vertices--------------\n";
+		int i=0;
 		for(auto elem : vertices)
 		{
-			cout <<"Vertex "<< elem.first << ": (" << elem.second.x << ", " << elem.second.y << ")\n";
+			cout <<"Vertex "<<i << ": (" << elem.x << ", " << elem.y << ")\n";
+			i++;
 		}
 	}
 
@@ -216,15 +190,23 @@ class Graph
 		return vertices[i];
 	}
 
+	//Display individual vertex
 	void displayVertex(vertex a){
 		cout<<"("<<a.x<<", "<<a.y<<"), ";
 	}
 
+	//Return distance between two nodes
 	int getDistance(vertex a, vertex b){
 		return sqrt(pow((b.x-a.x),2)+ pow((b.y-a.y),2));
 	}
 
-	int getGraphSize(){
-		return this->size;
+	void setSize(int size){
+		adjList.resize(size);
 	}
+
+	int getGraphSize(){
+		return this->adjList.size();
+	}
+
+
 };
