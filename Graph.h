@@ -83,9 +83,12 @@ class Graph
 	}
 
     //Generate sample shapes: rectangle, triangle, square
-	/*
-	void sampleShape(char c){
+	
+	void sampleShape(char c)
+	{
+		
 		srand(time(NULL));
+		
 		if(c=='a'){
 			int x = rand()%50;
 			int y = rand()%50;
@@ -109,8 +112,9 @@ class Graph
 			vertices[3]=v;
 
 			insertEdge(vertices[0], vertices[1]);
-			insertEdge(vertices[1], vertices[2]);
-			insertEdge(vertices[2], vertices[0]);
+			insertEdge(vertices[2], vertices[3]);
+			insertEdge(vertices[0], vertices[2]);
+			insertEdge(vertices[1], vertices[3]);
 
 		}
 		else if (c=='b'){
@@ -129,9 +133,9 @@ class Graph
 			vertices[2]=v;
 
 			insertEdge(vertices[0], vertices[1]);
-			insertEdge(vertices[2], vertices[3]);
+			insertEdge(vertices[2], vertices[1]);
 			insertEdge(vertices[0], vertices[2]);
-			insertEdge(vertices[1], vertices[3]);
+			
 		}
 		else{
 			int x = rand()%50;
@@ -161,7 +165,7 @@ class Graph
 		}
 
 	}
-*/
+
 	void insertEdge(vertex a, vertex b){
 
 		int inda;
