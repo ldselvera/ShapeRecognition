@@ -45,11 +45,7 @@ class Graph
 	}
 
 	void createGraph(){
-		char choice;
-		/*cout<<"Choose sample shape(a, b, or c):\na. Rectangle\nb. Triangle\nc. Square"<<endl;
-		cin>>choice;
-		sampleShape(choice);
-		*/
+		
 		int x, y,c,a,b;
 		srand(time(NULL));	
 
