@@ -3,8 +3,10 @@
 #include <cmath>
 #include <cstdlib>
 #include <ctime>
-#include <fstream>
 #include <iostream>
+#include <list>
+#include <set>
+#include <iterator>
 
 using namespace std;
 
@@ -24,15 +26,55 @@ class Graph
 		double distance=0.0;
 	};
 	
-	map <int, edge> edges;
 	map <int, vertex> vertices;
 	vertex v;
-	edge ed;
+
+	int size;
+	list<vertex> *graph;
 	
   public:
 
-	Graph ( )
-	{}
+	Graph (int size){
+		this->size=size;
+		graph = new list<vertex>[size];
+	}
+
+	bool isEmpty() const{
+		return (size==0);
+	}
+
+	void createGraph(){
+		char choice;
+		/*cout<<"Choose sample shape(a, b, or c):\na. Rectangle\nb. Triangle\nc. Square"<<endl;
+		cin>>choice;
+		sampleShape(choice);
+		*/
+		int x, y,c,a,b;
+		srand(time(NULL));	
+
+		//Generate random Vertices and Edges
+		for(int i=0; i<size;i++){
+			x=rand()%20;
+			y=rand()%20;
+
+			if(x==y)
+				y=rand()%20;
+
+			insertVertex(x, y, i);
+		}
+
+		cout<<"How many edges?"<<endl;
+		cin>>c;
+
+		for(int i=0; i<c;i++){
+			a=rand()%size;
+			b=rand()%size;
+			insertEdge(getVertex(a), getVertex(b));
+		}
+	}
+
+	void printGraph();
+
 
 	void insertVertex(int x, int y, int i){
 			v.x=x;
@@ -40,6 +82,8 @@ class Graph
 			vertices[i]=v;
 	}
 
+    //Generate sample shapes: rectangle, triangle, square
+	/*
 	void sampleShape(char c){
 		srand(time(NULL));
 		if(c=='a'){
@@ -64,15 +108,9 @@ class Graph
 			v.y=w;
 			vertices[3]=v;
 
-			insertEdge(vertices[0], vertices[1], 0);
-			insertEdge(vertices[0], vertices[2], 1);
-			insertEdge(vertices[1], vertices[3], 2);
-			insertEdge(vertices[2], vertices[3], 3);
-
-			edges[0].distance= sqrt(pow((edges[0].b.x-edges[0].a.x),2)+ pow((edges[0].b.y-edges[0].a.y),2));
-			edges[1].distance= sqrt(pow((edges[1].b.x-edges[1].a.x),2)+ pow((edges[1].b.y-edges[1].a.y),2));
-			edges[2].distance= sqrt(pow((edges[2].b.x-edges[2].a.x),2)+ pow((edges[2].b.y-edges[2].a.y),2));
-			edges[3].distance= sqrt(pow((edges[3].b.x-edges[3].a.x),2)+ pow((edges[3].b.y-edges[3].a.y),2));
+			insertEdge(vertices[0], vertices[1]);
+			insertEdge(vertices[1], vertices[2]);
+			insertEdge(vertices[2], vertices[0]);
 
 		}
 		else if (c=='b'){
@@ -90,13 +128,10 @@ class Graph
 			v.y=rand()%50;
 			vertices[2]=v;
 
-			insertEdge(vertices[0], vertices[1], 0);
-			insertEdge(vertices[0], vertices[2], 1);
-			insertEdge(vertices[1], vertices[2], 2);
-
-			edges[0].distance= sqrt(pow((edges[0].b.x-edges[0].a.x),2)+ pow((edges[0].b.y-edges[0].a.y),2));
-			edges[1].distance= sqrt(pow((edges[1].b.x-edges[1].a.x),2)+ pow((edges[1].b.y-edges[1].a.y),2));
-			edges[2].distance= sqrt(pow((edges[2].b.x-edges[2].a.x),2)+ pow((edges[2].b.y-edges[2].a.y),2));
+			insertEdge(vertices[0], vertices[1]);
+			insertEdge(vertices[2], vertices[3]);
+			insertEdge(vertices[0], vertices[2]);
+			insertEdge(vertices[1], vertices[3]);
 		}
 		else{
 			int x = rand()%50;
@@ -119,25 +154,31 @@ class Graph
 			v.y=y+dist;
 			vertices[3]=v;
 
-			insertEdge(vertices[0], vertices[1], 0);
-			insertEdge(vertices[0], vertices[2], 1);
-			insertEdge(vertices[1], vertices[3], 2);
-			insertEdge(vertices[2], vertices[3], 3);
-
-			edges[0].distance= sqrt(pow((edges[0].b.x-edges[0].a.x),2)+ pow((edges[0].b.y-edges[0].a.y),2));
-			edges[1].distance= sqrt(pow((edges[1].b.x-edges[1].a.x),2)+ pow((edges[1].b.y-edges[1].a.y),2));
-			edges[2].distance= sqrt(pow((edges[2].b.x-edges[2].a.x),2)+ pow((edges[2].b.y-edges[2].a.y),2));
-			edges[3].distance= sqrt(pow((edges[3].b.x-edges[3].a.x),2)+ pow((edges[3].b.y-edges[3].a.y),2));
+			insertEdge(vertices[0], vertices[1]);
+			insertEdge(vertices[2], vertices[3]);
+			insertEdge(vertices[0], vertices[2]);
+			insertEdge(vertices[1], vertices[3]);
 		}
 
 	}
+*/
+	void insertEdge(vertex a, vertex b){
 
-	void insertEdge(vertex a, vertex b, int i){
+		int inda;
+		int indb;
 
-			edges[i].a = a;
-			edges[i].b= b;
+		for (auto elem : vertices){
+			if(elem.second.x==a.x && elem.second.y== a.y)
+				inda=elem.first;
+			else if(elem.second.x==b.x && elem.second.y== b.y)
+				indb = elem.first;
+		}
+		cout<<endl;
+		cout<<inda<<" "<<vertices[inda].x<<" "<<vertices[inda].y<<endl;
+		cout<<indb<<" "<<vertices[indb].x<<" "<<vertices[indb].y<<endl;
 
-			edges[i].distance= sqrt(pow((edges[i].b.x-edges[i].a.x),2)+ pow((edges[i].b.y-edges[i].a.y),2));
+		graph[inda].push_back(b);	
+		graph[indb].push_back(a);
 	}
 
 	void displayVertices(){
@@ -148,31 +189,15 @@ class Graph
 		}
 	}
 
-	void displayEdges(){
-		cout<<"---------------Edges--------------\n";
-		for(auto elem : edges){
-			cout <<"Edge "<< elem.first+1<< ": (" << elem.second.a.x << ", " << elem.second.a.y << "), (";
-			cout<<elem.second.b.x << ", " << elem.second.b.y << ") Distance: "<<elem.second.distance<<"\n";
-		}
-	}
-
-	void writeGraph(){
-		ofstream file;
-		 file.open("Graph.txt");
-		if(file.is_open()){
-			for(auto elem : edges){
-				file <<"(" << elem.second.a.x << ", " << elem.second.a.y << "), (";
-				file<<elem.second.b.x << ", " << elem.second.b.y << ")\n";
-			}
-		}
-		file.close();
-	}
-
-	edge getEdge(int i){
-		return edges[i];
-	}
-
 	vertex getVertex(int i){
 		return vertices[i];
+	}
+
+	int getDistance(vertex a, vertex b){
+		return sqrt(pow((b.x-a.x),2)+ pow((b.y-a.y),2));
+	}
+
+	int getGraphSize(){
+		return this->size;
 	}
 };
