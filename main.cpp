@@ -26,6 +26,7 @@ int main()
 			Graph g(size);
 			g.createGraph();
 			g.displayVertices();
+			g.printGraph();
 			choice='z';
 		}
 		else if (choice =='b'){
@@ -40,6 +41,7 @@ int main()
 			Graph g(size);
 			g.sampleShape(c);
 			g.displayVertices();
+			g.printGraph();
 			choice='z';
 		}
 		else{

@@ -29,14 +29,15 @@ class Graph
 	map <int, vertex> vertices;
 	vertex v;
 
+	vector<list<vertex> > adjList;
+
 	int size;
-	list<vertex> *graph;
 	
   public:
 
 	Graph (int size){
 		this->size=size;
-		graph = new list<vertex>[size];
+		adjList.resize(size);
 	}
 
 	bool isEmpty() const{
@@ -63,17 +64,21 @@ class Graph
 			insertVertex(x, y, i);
 		}
 
+		for(int i=0; i<adjList.size();i++){
+			vertex a = vertices[i];
+			adjList[i].push_back(a);
+		}
+
+	
 		cout<<"How many edges?"<<endl;
 		cin>>c;
 
 		for(int i=0; i<c;i++){
 			a=rand()%size;
 			b=rand()%size;
-			insertEdge(getVertex(a), getVertex(b));
+			insertEdge(a, b);
 		}
 	}
-
-	void printGraph();
 
 
 	void insertVertex(int x, int y, int i){
@@ -111,10 +116,15 @@ class Graph
 			v.y=w;
 			vertices[3]=v;
 
-			insertEdge(vertices[0], vertices[1]);
-			insertEdge(vertices[2], vertices[3]);
-			insertEdge(vertices[0], vertices[2]);
-			insertEdge(vertices[1], vertices[3]);
+			for(int i=0; i<adjList.size();i++){
+			vertex a = vertices[i];
+			adjList[i].push_back(a);
+		}
+
+			insertEdge(0, 1);
+			insertEdge(2, 3);
+			insertEdge(0, 2);
+			insertEdge(1, 3);
 
 		}
 		else if (c=='b'){
@@ -132,9 +142,14 @@ class Graph
 			v.y=rand()%50;
 			vertices[2]=v;
 
-			insertEdge(vertices[0], vertices[1]);
-			insertEdge(vertices[2], vertices[1]);
-			insertEdge(vertices[0], vertices[2]);
+			for(int i=0; i<adjList.size();i++){
+				vertex a = vertices[i];
+				adjList[i].push_back(a);
+			}
+
+			insertEdge(0, 1);
+			insertEdge(2, 1);
+			insertEdge(0, 2);
 			
 		}
 		else{
@@ -158,43 +173,56 @@ class Graph
 			v.y=y+dist;
 			vertices[3]=v;
 
-			insertEdge(vertices[0], vertices[1]);
-			insertEdge(vertices[2], vertices[3]);
-			insertEdge(vertices[0], vertices[2]);
-			insertEdge(vertices[1], vertices[3]);
+			for(int i=0; i<adjList.size();i++){
+				vertex a = vertices[i];
+				adjList[i].push_back(a);
+			}	
+
+			insertEdge(0, 1);
+			insertEdge(2, 3);
+			insertEdge(0, 2);
+			insertEdge(1, 3);
 		}
 
 	}
 
-	void insertEdge(vertex a, vertex b){
+	void insertEdge(int a, int b){
+		adjList[a].push_back(vertices[b]);	
+		adjList[b].push_back(vertices[a]);
+	}
 
-		int inda;
-		int indb;
+	void printGraph(){
 
-		for (auto elem : vertices){
-			if(elem.second.x==a.x && elem.second.y== a.y)
-				inda=elem.first;
-			else if(elem.second.x==b.x && elem.second.y== b.y)
-				indb = elem.first;
-		}
 		cout<<endl;
-		cout<<inda<<" "<<vertices[inda].x<<" "<<vertices[inda].y<<endl;
-		cout<<indb<<" "<<vertices[indb].x<<" "<<vertices[indb].y<<endl;
-
-		graph[inda].push_back(b);	
-		graph[indb].push_back(a);
+		cout<<"-----------Adjacency List Graph Representation--------------"
+		for(int i=0; i<adjList.size();i++){
+			cout<<i<<": ";
+			if(adjList[i].empty())
+				cout<<"Empty";
+			else{
+				list<vertex> li = adjList[i];
+				for(auto elem: li){
+					cout<<"("<<elem.x<<", "<<elem.y<<"), ";
+				}
+			}
+			cout<<endl;
+		}
 	}
 
 	void displayVertices(){
 		cout<<"---------------Vertices--------------\n";
 		for(auto elem : vertices)
 		{
-			cout <<"Vertex "<< elem.first+1 << ": (" << elem.second.x << ", " << elem.second.y << ")\n";
+			cout <<"Vertex "<< elem.first << ": (" << elem.second.x << ", " << elem.second.y << ")\n";
 		}
 	}
 
 	vertex getVertex(int i){
 		return vertices[i];
+	}
+
+	void displayVertex(vertex a){
+		cout<<"("<<a.x<<", "<<a.y<<"), ";
 	}
 
 	int getDistance(vertex a, vertex b){
