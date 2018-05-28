@@ -15,6 +15,11 @@ class Graph
 	{
 		int x;
 		int y;
+
+		bool operator==(const vertex& a) const{
+        	return (x == a.x && y == a.y);
+    	}
+
 	};
 	
 	vector<vertex> vertices;
@@ -25,39 +30,121 @@ class Graph
 
   public:
 
+	Graph(){
+		this->size=0;
+		adjList.resize(size);
+	}
+
 	Graph (int size){
 		this->size=size;
 		adjList.resize(size);
 	}
 
 	bool isEmpty() const{
-		return (size==0);
+		return vertices.empty();
 	}
 
-	//Generate random graph with inputted number of vertices and edges
-	void createRandomGraph(){
-		
-		int x, y,c,a,b;
-		srand(time(NULL));	
+    //Generate sample shapes: rectangle, triangle, square
+	void sampleShape(){
+		char c;
 
-		//Generate random Vertices and Edges
-		for(int i=0; i<size;i++){
-			x=rand()%20;
-			y=rand()%20;
-		if(x==y)
-			y=rand()%20;
-			insertVertex(x, y);
-			setGraph();
-		}
-	
-		cout<<"How many edges?"<<endl;
+		cout<<"Choose shape:\na. rectangle\nb. triangle\nc. square"<<endl;
 		cin>>c;
-
-		for(int i=0; i<c;i++){
-			a=rand()%size;
-			b=rand()%size;
-			insertEdge(a, b);
+		if(c=='a'){						//Generate rectangle
+			createRectangle();
+			return;
 		}
+		else if (c=='b'){			//Generate Triangle
+			createTriangle();
+			return;
+		}
+		else{							//Generate Square
+			createSquare();
+			return;
+		}
+	}
+
+	void createRectangle(){
+				
+		srand(time(NULL));
+		int x = rand()%50;
+		int y = rand()%50;
+		int u = rand()%50;
+		int w = rand()%50;
+
+		insertVertex(x, y);
+		setGraph();
+
+		insertVertex(x, w);
+		setGraph();
+
+		insertVertex(u, y);
+		setGraph();
+
+		insertVertex(u, w);
+		setGraph();			
+
+		int n = vertices.size()-1;
+
+		insertEdge(n-3, n-2);
+		insertEdge(n-1, n);
+		insertEdge(n-3, n-1);
+		insertEdge(n-2, n);
+
+		cout<<"Rectangle added to the graph."<<endl;
+	}
+
+	void createSquare(){
+		
+		srand(time(NULL));
+		int x = rand()%50;
+		int y = rand()%50;
+		int dist = abs(x-y);
+
+		insertVertex(x, y);
+		setGraph();
+
+		insertVertex(x+dist, y);
+		setGraph();
+
+		insertVertex(x, y+dist);
+		setGraph();
+
+		insertVertex(x+dist, y+dist);
+		setGraph();			
+
+		int n = vertices.size()-1;
+
+		insertEdge(n-3, n-2);
+		insertEdge(n-1, n);
+		insertEdge(n-3, n-1);
+		insertEdge(n-2, n);
+		
+		cout<<"Square added to the graph."<<endl;
+	}
+
+	void createTriangle(){
+
+		srand(time(NULL));
+
+		int x = rand()%50;
+
+		insertVertex(x, rand()%50);
+		setGraph();
+
+		insertVertex(x, rand()%50);
+		setGraph();
+
+		insertVertex(rand()%50, rand()%50);
+		setGraph();
+
+		int n = vertices.size()-1;
+
+		insertEdge(n-2, n-1);
+		insertEdge(n, n-1);
+		insertEdge(n-2, n);
+
+		cout<<"Triangle added to the graph."<<endl;
 	}
 
 	//Initialize adjacency list with inputted vertices
@@ -71,118 +158,99 @@ class Graph
 
 	//Insert vertex into list of vertices
 	void insertVertex(int x, int y){
-			v.x=x;
-			v.y=y;
+		v.x=x;
+		v.y=y;
+
+		if(vertices.empty())
 			vertices.push_back(v);
+		else{
+			for(int i=0;i<vertices.size();i++){
+				if(vertices[i]==v)
+					return;
+				}
+				
+			vertices.push_back(v);
+			}	
+		
 	}
 
-    //Generate sample shapes: rectangle, triangle, square
-	void sampleShape(char c)
-	{
-		
-		srand(time(NULL));
-		
-		if(c=='a'){						//Generate rectangle
-			int x = rand()%50;
-			int y = rand()%50;
-			int u = rand()%50;
-			int w = rand()%50;
-
-			insertVertex(x, y);
-			setGraph();
-
-			insertVertex(x, w);
-			setGraph();
-
-			insertVertex(u, y);
-			setGraph();
-
-			insertVertex(u, w);
-			setGraph();			
-
-			insertEdge(0, 1);
-			insertEdge(2, 3);
-			insertEdge(0, 2);
-			insertEdge(1, 3);
-
-		}
-		else if (c=='b'){				//Generate Triangle
-			int x = rand()%50;
-
-			insertVertex(x, rand()%50);
-			setGraph();
-
-			insertVertex(x, rand()%50);
-			setGraph();
-
-			insertVertex(rand()%50, rand()%50);
-			setGraph();
-
-			insertEdge(0, 1);
-			insertEdge(2, 1);
-			insertEdge(0, 2);
+	//Generate n random vertices
+	void randomVertices(int n){
+		srand(time(NULL));	
+		int x, y;
+		for(int i=0; i<n;i++){
+			x=rand()%20;
+			y=rand()%20;
+			if(x==y)
+				y=rand()%20;
 			
-		}
-		else{							//Generate Square
-			int x = rand()%50;
-			int y = rand()%50;
-			int dist = abs(x-y);
-
 			insertVertex(x, y);
 			setGraph();
-
-			insertVertex(x+dist, y);
-			setGraph();
-
-			insertVertex(x, y+dist);
-			setGraph();
-
-			insertVertex(x+dist, y+dist);
-			setGraph();			
-
-			insertEdge(0, 1);
-			insertEdge(2, 3);
-			insertEdge(0, 2);
-			insertEdge(1, 3);
 		}
-
 	}
 
 	//Insert node into proper adjacency list
 	//Node is added to both list 
 	//Undirected Grpah
 	void insertEdge(int a, int b){
-		adjList[a].push_back(vertices[b]);	
-		adjList[b].push_back(vertices[a]);
+
+		if(vertices[a]==vertices[b])
+			return;
+		
+
+		if(vertices.empty())
+			cout<<"No vertices in the graph."<<endl;
+		else{
+			adjList[a].push_back(vertices[b]);	
+			adjList[b].push_back(vertices[a]);
+		}
 	}
+
+	//Generate n random edges
+	void randomEdges(int n){
+		srand(time(NULL));	
+		int a, b;
+		for(int i=0; i<n;i++){
+			a=rand()%vertices.size();
+			b=rand()%vertices.size();
+			insertEdge(a, b);
+		}
+	}
+
 
 	//Display the adjacency list
 	void printGraph(){
-
-		cout<<endl;
-		cout<<"-----------Adjacency List Graph Representation--------------\n";
-		for(int i=0; i<vertices.size();i++){
-			cout<<i<<": ";
-			if(adjList[i].empty())
-				cout<<"Empty";
-			else{
-				list<vertex> li = adjList[i];
-				for(auto elem: li){
-					cout<<"("<<elem.x<<", "<<elem.y<<"), ";
+		if(adjList.empty())
+			cout<<"No edges in the graph"<<endl;
+		else{
+			cout<<"\n-----------Adjacency List Graph Representation--------------\n";
+			for(int i=0; i<vertices.size();i++){
+				cout<<i<<": ";
+				if(adjList[i].empty())
+					cout<<"Empty";
+				else{
+					list<vertex> li = adjList[i];
+					for(auto elem: li){
+						cout<<"("<<elem.x<<", "<<elem.y<<"), ";
+					}
 				}
+				cout<<endl;
 			}
-			cout<<endl;
 		}
 	}
 
 	//Display all nodes/vertices
 	void displayVertices(){
-		cout<<"---------------Vertices--------------\n";
-		int i=0;
-		for(auto elem : vertices)
-		{
-			cout <<"Vertex "<<i << ": (" << elem.x << ", " << elem.y << ")\n";
-			i++;
+		if(vertices.empty())
+			cout<<"No vertices in the graph."<<endl;
+		else{
+			cout<<"---------------Vertices--------------\n";
+			int i=0;
+			for(auto elem : vertices)
+			{
+				cout <<"Vertex "<<i << ": (" << elem.x << ", " << elem.y << ")\n";
+				i++;
+			}
 		}
 	}
 
@@ -200,6 +268,10 @@ class Graph
 		return sqrt(pow((b.x-a.x),2)+ pow((b.y-a.y),2));
 	}
 
+	void clearVertices(){
+		vertices.resize(0);
+	}
+
 	void setSize(int size){
 		adjList.resize(size);
 	}
@@ -207,6 +279,5 @@ class Graph
 	int getGraphSize(){
 		return this->adjList.size();
 	}
-
 
 };
