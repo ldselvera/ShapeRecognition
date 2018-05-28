@@ -1,5 +1,5 @@
+
 #include <vector>
-#include <map>
 #include <cmath>
 #include <cstdlib>
 #include <ctime>
@@ -50,20 +50,21 @@ class Graph
 
 		cout<<"Choose shape:\na. rectangle\nb. triangle\nc. square"<<endl;
 		cin>>c;
-		if(c=='a'){						//Generate rectangle
+		if(c=='a'){						
 			createRectangle();
 			return;
 		}
-		else if (c=='b'){			//Generate Triangle
+		else if (c=='b'){			
 			createTriangle();
 			return;
 		}
-		else{							//Generate Square
+		else{							
 			createSquare();
 			return;
 		}
 	}
 
+	//Generate rectangle
 	void createRectangle(){
 				
 		srand(time(NULL));
@@ -94,6 +95,7 @@ class Graph
 		cout<<"Rectangle added to the graph."<<endl;
 	}
 
+	//Generate Square
 	void createSquare(){
 		
 		srand(time(NULL));
@@ -123,6 +125,7 @@ class Graph
 		cout<<"Square added to the graph."<<endl;
 	}
 
+	//Generate Triangle
 	void createTriangle(){
 
 		srand(time(NULL));
@@ -191,7 +194,7 @@ class Graph
 
 	//Insert node into proper adjacency list
 	//Node is added to both list 
-	//Undirected Grpah
+	//Undirected Graph
 	void insertEdge(int a, int b){
 
 		if(vertices[a]==vertices[b])
@@ -248,7 +251,7 @@ class Graph
 			int i=0;
 			for(auto elem : vertices)
 			{
-				cout <<"Vertex "<<i << ": (" << elem.x << ", " << elem.y << ")\n";
+				cout <<"Vertex #"<<i << ": (" << elem.x << ", " << elem.y << ")\n";
 				i++;
 			}
 		}

@@ -48,7 +48,7 @@ int main()
 				g.sampleShape();
 				break;
 			case 4:
-				cout<<"Enter number of random vertices to be created:";
+				cout<<"Enter number of random vertices to be inputted:";
 				cin>>n;
 				for(int i=0; i <n; i++){
 					cout<<"Type x & y coordinate:";
@@ -61,13 +61,13 @@ int main()
 				if(g.isEmpty())
 					cout<<"No vertices in the graph"<<endl;
 				else{
-					cout<<"Enter number of random edges to be created:";
+					cout<<"Enter number of random edges to be inputted:";
 					cin>>n;
 					
 					g.displayVertices();
 
 					for(int i=0; i <n; i++){
-						cout<<"Choose 2 vertices:";
+						cout<<"\nChoose 2 vertices from the list (Type the vertex #):";
 						cin>>a>>b;
 						g.insertEdge(a, b);
 					}
