@@ -18,8 +18,8 @@ void mainMenu(){
 	cout<<"6. Display Graph\n";
 	cout<<"7. Clear graph\n";
 	cout<<"8. Depth-First Traversal\n";
-	cout<<"9. Detect Shape\n";
-	cout << "10. Exit\n\n";
+	//cout<<"9. Detect Shape\n";
+	cout << "9. Exit\n\n";
 	return;
 }
 
@@ -78,10 +78,10 @@ int main()
 			case 8:
 				g.depthFirstTraversal();
 				break;
-			case 9:
+			//case 9:
 				g.detectShape();
 				break;
-			case 10:
+			case 9:
 				quit=true;
 				break;
 			default:
