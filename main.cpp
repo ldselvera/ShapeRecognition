@@ -78,9 +78,9 @@ int main()
 			case 8:
 				g.depthFirstTraversal();
 				break;
-			//case 9:
+			/*case 9:
 				g.detectShape();
-				break;
+				break;*/
 			case 9:
 				quit=true;
 				break;
