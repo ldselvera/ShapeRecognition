@@ -17,10 +17,10 @@ void mainMenu(){
 	cout<<"6. Display vertices\n";
 	cout<<"7. Display edges\n";
 	cout<<"8. Clear graph\n";
-	cout<<"9. Exit\n\n";
+	cout<<"9. Detect shapes\n";
+	cout<<"10. Exit\n\n";
 	return;
 }
-
 
 int main()
 {	
@@ -85,6 +85,9 @@ int main()
 				cout<<"Graph cleared.\n";
 				break;
 			case 9:
+				g.depthFirstTraversal();
+				break;
+			case 10:
 				quit=true;
 				break;
 			default:

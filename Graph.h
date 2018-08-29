@@ -5,6 +5,7 @@
 #include <ctime>
 #include <iostream>
 #include <list>
+#include <fstream>
 
 using namespace std;
 
@@ -15,6 +16,7 @@ class Graph
 	{
 		int x;
 		int y;
+		bool visited = false;	//vertex not visited
 
 		bool operator==(const vertex& a) const{
         	return (x == a.x && y == a.y);
@@ -200,7 +202,6 @@ class Graph
 		if(vertices[a]==vertices[b])
 			return;
 		
-
 		if(vertices.empty())
 			cout<<"No vertices in the graph."<<endl;
 		else{
@@ -244,6 +245,10 @@ class Graph
 
 	//Display all nodes/vertices
 	void displayVertices(){
+		ofstream outData;
+
+		outData.open("vertices.txt");
+
 		if(vertices.empty())
 			cout<<"No vertices in the graph."<<endl;
 		else{
@@ -252,9 +257,12 @@ class Graph
 			for(auto elem : vertices)
 			{
 				cout <<"Vertex #"<<i << ": (" << elem.x << ", " << elem.y << ")\n";
+				outData<<"Vertex #"<<i << ": (" << elem.x << ", " << elem.y << ")\n";
 				i++;
 			}
 		}
+
+		outData.close();
 	}
 
 	vertex getVertex(int i){
@@ -275,6 +283,15 @@ class Graph
 		vertices.resize(0);
 	}
 
+	int indexV(vertex v){
+		for(int i=0; i<vertices.size();i++){
+			if((v.x==vertices[i].x) && (v.y==vertices[i].y))
+				return i;
+			else
+				return -1;
+		}
+	}
+
 	void setSize(int size){
 		adjList.resize(size);
 	}
@@ -283,4 +300,36 @@ class Graph
 		return this->adjList.size();
 	}
 
+	void dfs(vertex v){
+		v.visited = true;
+		
+		cout <<"("<< v.x<<", " << v.y <<")";//visit the vertex
+		
+		int i = indexV(v);
+
+		list<vertex> li = adjList[i];
+
+		for(auto elem: li){
+
+			if((elem.x == v.x ) && (elem.y == v.y))
+				elem.visited=true;
+
+			if(!elem.visited)
+				dfs(elem);
+		}
+	}
+
+	void depthFirstTraversal(){
+		if(vertices.empty())
+			cout<<"Empty Graph."<<endl;
+		else{
+			cout<<"---------------Graph--------------\n";
+			for(auto elem : vertices)
+			{
+				if(!elem.visited)
+					dfs(elem);
+			}
+		}
+		cout<<endl;
+	}
 };
