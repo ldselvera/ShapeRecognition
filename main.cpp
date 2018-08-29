@@ -1,6 +1,7 @@
 /*
 A simple C++ class - "Graph". 
 The Graph class can be used to generate vertices and edges for a graph.
+Perform Depth-Firs Search.
 */
 
 #include "Graph.h"
@@ -14,11 +15,11 @@ void mainMenu(){
 	cout<<"3. Add Sample Shape\n";
 	cout<<"4. Add vertices\n";
 	cout<<"5. Add edges\n";
-	cout<<"6. Display vertices\n";
-	cout<<"7. Display edges\n";
-	cout<<"8. Clear graph\n";
-	cout<<"9. Detect shapes\n";
-	cout<<"10. Exit\n\n";
+	cout<<"6. Display Graph\n";
+	cout<<"7. Clear graph\n";
+	cout<<"8. Depth-First Traversal\n";
+	//cout<<"9. Detect Shape\n";
+	cout << "9. Exit\n\n";
 	return;
 }
 
@@ -54,40 +55,33 @@ int main()
 					cout<<"Type x & y coordinate:";
 					cin>>x>>y;
 					g.insertVertex(x, y);
-					g.setGraph();
 				}
 				break;
 			case 5:
-				if(g.isEmpty())
-					cout<<"No vertices in the graph"<<endl;
-				else{
-					cout<<"Enter number of random edges to be inputted:";
-					cin>>n;
-					
-					g.displayVertices();
-
+				cout<<"Enter number of random edges to be inputted:";
+				cin>>n;
 					for(int i=0; i <n; i++){
-						cout<<"\nChoose 2 vertices from the list (Type the vertex #):";
+						cout<<"\nType first x & y coordinate:";
 						cin>>a>>b;
-						g.insertEdge(a, b);
+						cout << "\nType second x & y coordinate:";
+						cin >> x >> y;
+						g.insertEdge(a, b, x, y);
 					}
-				}
 				break;
 			case 6:
-				g.displayVertices();
-				break;
-			case 7:
 				g.printGraph();
 				break;
-			case 8:
-				g.clearVertices();
-				g.setSize(0);
+			case 7:
+				g.clearGraph();
 				cout<<"Graph cleared.\n";
 				break;
-			case 9:
+			case 8:
 				g.depthFirstTraversal();
 				break;
-			case 10:
+			/*case 9:
+				g.detectShape();
+				break;*/
+			case 9:
 				quit=true;
 				break;
 			default:
@@ -97,6 +91,5 @@ int main()
 		}
 	}
 	
-
 	return 0;
 } 

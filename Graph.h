@@ -1,4 +1,3 @@
-
 #include <vector>
 #include <cmath>
 #include <cstdlib>
@@ -6,330 +5,301 @@
 #include <iostream>
 #include <list>
 #include <fstream>
+#include <string>
 
 using namespace std;
 
 class Graph
 {
-  private:
+private:
 	struct vertex
 	{
 		int x;
 		int y;
-		bool visited = false;	//vertex not visited
+		//bool visited = false;	//vertex not visited
+		struct vertex *parent;
+		int discovery = -1;
+		int finished = -1;
+		string color = "white";
 
-		bool operator==(const vertex& a) const{
-        	return (x == a.x && y == a.y);
-    	}
+		bool operator==(const vertex* a) const {
+			return (x == a->x && y == a->y);
+		}
 
 	};
-	
-	vector<vertex> vertices;
-	vertex v;
-	vector<list<vertex> > adjList;
 
+	vector<list<vertex*> > adjList;
 	int size;
+	int times;
 
-  public:
+public:
 
-	Graph(){
-		this->size=0;
+	Graph() {
+		this->size = 0;
+	}
+
+	Graph(int size) {
+		this->size = size;
 		adjList.resize(size);
 	}
 
-	Graph (int size){
-		this->size=size;
-		adjList.resize(size);
+	void clearGraph() {
+		adjList.resize(0);
 	}
 
-	bool isEmpty() const{
-		return vertices.empty();
-	}
-
-    //Generate sample shapes: rectangle, triangle, square
-	void sampleShape(){
-		char c;
-
-		cout<<"Choose shape:\na. rectangle\nb. triangle\nc. square"<<endl;
-		cin>>c;
-		if(c=='a'){						
-			createRectangle();
-			return;
-		}
-		else if (c=='b'){			
-			createTriangle();
-			return;
-		}
-		else{							
-			createSquare();
-			return;
+	void resetGraph(){
+		for(auto list:this->adjList){
+			for (auto elem:list){
+				elem->discovery=-1;
+				elem->finished=-1;
+				elem->color="white";
+			}
 		}
 	}
 
-	//Generate rectangle
-	void createRectangle(){
-				
-		srand(time(NULL));
-		int x = rand()%50;
-		int y = rand()%50;
-		int u = rand()%50;
-		int w = rand()%50;
+	//Generate sample shapes: rectangle, triangle, square
+	 void sampleShape(){
+		 char c;
 
-		insertVertex(x, y);
-		setGraph();
+		 cout<<"Choose shape:\na. rectangle\nb. triangle\nc. square"<<endl;
+		 cin>>c;
+		 if (c == 'a') {
+			 createRectangle();
+			 return;
+		 }
+		 else if (c == 'b') {
+			 createTriangle();
+			 return;
+		 }
+		 else if (c == 'c') {
+			 createSquare();
+			 return;
+		 }
+		 else
+			 cout << "Please enter a letter from a, b, c.";
+	 }
+	
+	 //Insert vertex into list of vertices
+	void insertVertex(int x, int y) {
+		vertex *v = new vertex;
+		v->x = x;
+		v->y = y;
 
-		insertVertex(x, w);
-		setGraph();
+		list<vertex*> li;
 
-		insertVertex(u, y);
-		setGraph();
+		li.push_back(v);
+		adjList.push_back(li);
 
-		insertVertex(u, w);
-		setGraph();			
-
-		int n = vertices.size()-1;
-
-		insertEdge(n-3, n-2);
-		insertEdge(n-1, n);
-		insertEdge(n-3, n-1);
-		insertEdge(n-2, n);
-
-		cout<<"Rectangle added to the graph."<<endl;
-	}
-
-	//Generate Square
-	void createSquare(){
-		
-		srand(time(NULL));
-		int x = rand()%50;
-		int y = rand()%50;
-		int dist = abs(x-y);
-
-		insertVertex(x, y);
-		setGraph();
-
-		insertVertex(x+dist, y);
-		setGraph();
-
-		insertVertex(x, y+dist);
-		setGraph();
-
-		insertVertex(x+dist, y+dist);
-		setGraph();			
-
-		int n = vertices.size()-1;
-
-		insertEdge(n-3, n-2);
-		insertEdge(n-1, n);
-		insertEdge(n-3, n-1);
-		insertEdge(n-2, n);
-		
-		cout<<"Square added to the graph."<<endl;
-	}
-
-	//Generate Triangle
-	void createTriangle(){
-
-		srand(time(NULL));
-
-		int x = rand()%50;
-
-		insertVertex(x, rand()%50);
-		setGraph();
-
-		insertVertex(x, rand()%50);
-		setGraph();
-
-		insertVertex(rand()%50, rand()%50);
-		setGraph();
-
-		int n = vertices.size()-1;
-
-		insertEdge(n-2, n-1);
-		insertEdge(n, n-1);
-		insertEdge(n-2, n);
-
-		cout<<"Triangle added to the graph."<<endl;
-	}
-
-	//Initialize adjacency list with inputted vertices
-	void setGraph(){
-
-		adjList.resize(vertices.size());
-
-		vertex a = vertices[vertices.size()-1];
-		adjList[adjList.size()-1].push_back(a);
-	}
-
-	//Insert vertex into list of vertices
-	void insertVertex(int x, int y){
-		v.x=x;
-		v.y=y;
-
-		if(vertices.empty())
-			vertices.push_back(v);
-		else{
-			for(int i=0;i<vertices.size();i++){
-				if(vertices[i]==v)
-					return;
-				}
-				
-			vertices.push_back(v);
-			}	
-		
 	}
 
 	//Generate n random vertices
-	void randomVertices(int n){
-		srand(time(NULL));	
-		int x, y;
-		for(int i=0; i<n;i++){
-			x=rand()%20;
-			y=rand()%20;
-			if(x==y)
-				y=rand()%20;
-			
-			insertVertex(x, y);
-			setGraph();
+	void randomVertices(int n) {
+		srand((unsigned int)time(NULL));
+		for (int i = 0; i < n; i++) {
+			insertVertex(rand() % 20, rand() % 20);
 		}
 	}
 
 	//Insert node into proper adjacency list
 	//Node is added to both list 
 	//Undirected Graph
-	void insertEdge(int a, int b){
-
-		if(vertices[a]==vertices[b])
-			return;
+	void insertEdge(int a, int b, int c, int d) {
 		
-		if(vertices.empty())
-			cout<<"No vertices in the graph."<<endl;
-		else{
-			adjList[a].push_back(vertices[b]);	
-			adjList[b].push_back(vertices[a]);
+		if (adjList.empty()) {
+			insertVertex(a, b);
+			insertVertex(c, d);
 		}
-	}
+		else {
+			if (!findV(a, b))
+				insertVertex(a, b);
+			if (!findV(c, d)) 
+				insertVertex(c, d);
+		}
 
+		int indu = indexV(a, b);
+		int indw = indexV(c, d);
+
+		vertex *u = adjList[indu].front();
+		vertex *w = adjList[indw].front();
+
+		if ((a == c) && (b == d))
+			return;
+		else {
+			if (!findNeighbors(u, w)) {			//Avoid adding repeated edge
+				adjList[indu].push_back(w);
+			}
+			if (!findNeighbors(w, u)) {				//Avoid adding repeated edge
+				adjList[indw].push_back(u);
+			}
+			}
+	}	
+	
 	//Generate n random edges
-	void randomEdges(int n){
-		srand(time(NULL));	
-		int a, b;
-		for(int i=0; i<n;i++){
-			a=rand()%vertices.size();
-			b=rand()%vertices.size();
-			insertEdge(a, b);
+	void randomEdges(int n) {
+		 srand((unsigned int) time(NULL));
+		for (int i = 0; i < n; i++) {
+			insertEdge(rand() % 20, rand() % 20, rand() % 20, rand() % 20);
 		}
 	}
-
 
 	//Display the adjacency list
-	void printGraph(){
-		if(adjList.empty())
-			cout<<"No edges in the graph"<<endl;
-		else{
-			cout<<"\n-----------Adjacency List Graph Representation--------------\n";
-			for(int i=0; i<vertices.size();i++){
-				cout<<i<<": ";
-				if(adjList[i].empty())
-					cout<<"Empty";
-				else{
-					list<vertex> li = adjList[i];
-					for(auto elem: li){
-						cout<<"("<<elem.x<<", "<<elem.y<<"), ";
-					}
-				}
-				cout<<endl;
-			}
-		}
-	}
-
-	//Display all nodes/vertices
-	void displayVertices(){
+	void printGraph() {
+		int i = 0;
 		ofstream outData;
-
 		outData.open("vertices.txt");
 
-		if(vertices.empty())
-			cout<<"No vertices in the graph."<<endl;
-		else{
-			cout<<"---------------Vertices--------------\n";
-			int i=0;
-			for(auto elem : vertices)
-			{
-				cout <<"Vertex #"<<i << ": (" << elem.x << ", " << elem.y << ")\n";
-				outData<<"Vertex #"<<i << ": (" << elem.x << ", " << elem.y << ")\n";
+		if (adjList.empty())
+			cout << "Empty Graph." << endl;
+		else {
+			cout << "\n-----------Adjacency List Graph Representation--------------\n";
+			for (auto list : adjList) {
+				cout << i << ": ";
+				outData << i << ": ";
+				for (auto elem : list) {
+					cout << "(" << elem->x << ", " << elem->y << ") ";
+					outData << "(" << elem->x << ", " << elem->y << ")";
+				}
+				cout << endl;
+				outData << endl;
 				i++;
 			}
 		}
-
 		outData.close();
 	}
 
-	vertex getVertex(int i){
-		return vertices[i];
+	//Function to perform the depth first traversal of
+	//the entire graph.
+	void depthFirstTraversal() {
+		
+		resetGraph();
+
+		if (adjList.empty())
+			cout << "Empty Graph." << endl;
+		else {
+			cout << "---------------Depth-First Traversal--------------\n";
+			times = 0;
+			for (auto list : adjList) {
+				if (list.front()->color=="white")
+					dfs(list.front());
+			}
+			cout << endl;
+		}
 	}
 
-	//Display individual vertex
-	void displayVertex(vertex a){
-		cout<<"("<<a.x<<", "<<a.y<<"), ";
+private:
+
+	 //Generate rectangle
+	 void createRectangle(){
+
+		 srand((unsigned int) time(NULL));
+		 int x = rand()%50;
+		 int y = rand()%50;
+		 int a = rand()%50;
+		 int b = rand()%50;
+
+		 insertEdge(x, y, x, b);
+		 insertEdge(a, y, a, b);
+		 insertEdge(x, y,a, y);
+		 insertEdge(x, b, a, b);
+
+		 cout<<"Rectangle added to the graph."<<endl;
+	 }
+
+	 //Generate Square
+	 void createSquare(){
+
+		 srand((unsigned int)time(NULL));
+		 int x = rand()%50;
+		 int y = rand()%50;
+		 int dist = abs(x-y);
+
+		 insertEdge(x, y, x + dist, y);
+		 insertEdge(x, y + dist, x + dist, y + dist);
+		 insertEdge(x, y, x, y + dist);
+		 insertEdge(x + dist, y, x + dist, y + dist);
+
+		 cout<<"Square added to the graph."<<endl;
+	 }
+
+	 //Generate Triangle
+	 void createTriangle(){
+
+		 srand((unsigned int)time(NULL));
+
+		 int a = rand() % 50;
+		 int b = rand() % 50;
+		 int x = rand() % 50;
+		 int y = rand() % 50;
+		 int u = rand() % 50;
+		 int w = rand() % 50;
+
+		 insertEdge(x, y, a, b);
+		 insertEdge(a, b, u, w);
+		 insertEdge(u, w, x, y);
+
+		 cout<<"Triangle added to the graph."<<endl;
+	 }
+
+	//Return true if edge has already been created
+	bool findNeighbors(vertex *v, vertex *w) {
+		int indv = indexV(v->x, v->y);
+
+		for (auto *elem : adjList[indv]) {
+			if (*elem == w)
+				return true;
+		}
+		return false;
+	}
+
+	//Return true if Vertex is in the Adjacent List
+	bool findV(int a, int b) {
+		for (auto list : adjList) {
+			for (auto *elem : list) {
+				if ((elem->x == a)&&(elem->y == b))
+					return true;
+			}
+		}
+		return false;
 	}
 
 	//Return distance between two nodes
-	int getDistance(vertex a, vertex b){
-		return sqrt(pow((b.x-a.x),2)+ pow((b.y-a.y),2));
+	double getDistance(vertex u, vertex w){
+		return sqrt(pow((w.x-u.x),2)+ pow((w.y-u.y),2));
 	}
 
-	void clearVertices(){
-		vertices.resize(0);
-	}
-
-	int indexV(vertex v){
-		for(int i=0; i<vertices.size();i++){
-			if((v.x==vertices[i].x) && (v.y==vertices[i].y))
+	//Return index of vertex in the Adjacent List
+	int indexV(int a, int b){
+		for(size_t i=0; i<adjList.size();i++){
+			if ((a == adjList[i].front()->x) && (b == adjList[i].front()->y))
 				return i;
-			else
-				return -1;
-		}
+			}
+	
+		cout << "Index not found." << endl;
+		return -1;
 	}
-
-	void setSize(int size){
-		adjList.resize(size);
-	}
-
-	int getGraphSize(){
-		return this->adjList.size();
-	}
-
-	void dfs(vertex v){
-		v.visited = true;
 		
-		cout <<"("<< v.x<<", " << v.y <<")";//visit the vertex
+	//Function to perform the depth first traversal of
+	//the graph at a node specified by the parameter vertex.
+	void dfs(vertex *v) {
 		
-		int i = indexV(v);
+		v->color = "gray";
+		times++;
+		v->discovery = times;
 
-		list<vertex> li = adjList[i];
+		int j = indexV(v->x, v->y);
 
-		for(auto elem: li){
-
-			if((elem.x == v.x ) && (elem.y == v.y))
-				elem.visited=true;
-
-			if(!elem.visited)
+		for (auto elem : adjList[j]) {
+			if (elem->color == "white") {
+				elem->parent = v;
 				dfs(elem);
-		}
-	}
-
-	void depthFirstTraversal(){
-		if(vertices.empty())
-			cout<<"Empty Graph."<<endl;
-		else{
-			cout<<"---------------Graph--------------\n";
-			for(auto elem : vertices)
-			{
-				if(!elem.visited)
-					dfs(elem);
 			}
 		}
-		cout<<endl;
+
+		v->color = "black";
+		times++;
+		v->finished = times;
+		cout << "(" << v->x << ", " << v->y << ")";
+		cout << v->discovery << "/"<< v->finished << " ";
+		cout << v->color << endl;
 	}
 };
