@@ -5,6 +5,7 @@
 #include <iostream>
 #include <list>
 #include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -15,7 +16,11 @@ private:
 	{
 		int x;
 		int y;
-		bool visited = false;	//vertex not visited
+		//bool visited = false;	//vertex not visited
+		struct vertex *parent;
+		int discovery = -1;
+		int finished = -1;
+		string color = "white";
 
 		bool operator==(const vertex* a) const {
 			return (x == a->x && y == a->y);
@@ -25,6 +30,7 @@ private:
 
 	vector<list<vertex*> > adjList;
 	int size;
+	int times;
 
 public:
 
@@ -109,10 +115,12 @@ public:
 		if ((a == c) && (b == d))
 			return;
 		else {
-			if(!findNeighbors(u, w))			//Avoid adding repeated edge
+			if (!findNeighbors(u, w)) {			//Avoid adding repeated edge
 				adjList[indu].push_back(w);
-			if(!findNeighbors(w,u))				//Avoid adding repeated edge
-				adjList[indw].push_back(u);		
+			}
+			if (!findNeighbors(w, u)) {				//Avoid adding repeated edge
+				adjList[indw].push_back(u);
+			}
 			}
 	}	
 	
@@ -154,22 +162,15 @@ public:
 	void depthFirstTraversal() {
 		if (adjList.empty())
 			cout << "Empty Graph." << endl;
-		else{
+		else {
 			cout << "---------------Depth-First Traversal--------------\n";
-			for (auto list:adjList){
-				if (!list.front()->visited)
+			times = 0;
+			for (auto list : adjList) {
+				if (list.front()->color=="white")
 					dfs(list.front());
-					/*if (dfs(list.front(), 0))
-						cout << "Cycle" << endl;
-					else
-						cout << "Not cycle" << endl;*/
-				}
 			}
-		cout << endl;
-	}
-
-	void detectShape() {
-
+			cout << endl;
+		}
 	}
 
 private:
@@ -266,19 +267,26 @@ private:
 		
 	//Function to perform the depth first traversal of
 	//the graph at a node specified by the parameter vertex.
-	void dfs(vertex *v/*, vertex *parent*/) {
-		cout << "(" << v->x << ", " << v->y << ")";//visit the vertex
+	void dfs(vertex *v) {
+		
+		v->color = "gray";
+		times++;
+		v->discovery = times;
 
-		v->visited = true;
 		int j = indexV(v->x, v->y);
 
-		for (auto elem : this->adjList[j]) {
-			if (!elem->visited)
-				dfs(elem/*, v*/);
-			//else if (elem != v)
-			//	return true;
+		for (auto elem : adjList[j]) {
+			if (elem->color == "white") {
+				elem->parent = v;
+				dfs(elem);
+			}
 		}
 
-		//return false;
+		v->color = "black";
+		times++;
+		v->finished = times;
+		cout << "(" << v->x << ", " << v->y << ")";
+		cout << v->discovery << "/"<< v->finished << " ";
+		cout << v->color << endl;
 	}
 };
